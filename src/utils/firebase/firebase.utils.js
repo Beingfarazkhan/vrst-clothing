@@ -9,7 +9,6 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
-
 import {
   getFirestore,
   doc,
@@ -34,7 +33,8 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 
 const googleProvider = new GoogleAuthProvider();
-googleProvider.getCustomParameters({
+
+googleProvider.setCustomParameters({
   prompt: "select_account",
 });
 
@@ -48,7 +48,8 @@ export const db = getFirestore();
 
 export const addCollectionAndDocuments = async (
   collectionKey,
-  objectsToAdd
+  objectsToAdd,
+  field
 ) => {
   const collectionRef = collection(db, collectionKey);
   const batch = writeBatch(db);
@@ -59,7 +60,7 @@ export const addCollectionAndDocuments = async (
   });
 
   await batch.commit();
-  console.log("done!");
+  console.log("done");
 };
 
 export const getCategoriesAndDocuments = async () => {
@@ -91,14 +92,14 @@ export const createUserDocumentFromAuth = async (
     const createdAt = new Date();
 
     try {
-      setDoc(userDocRef, {
+      await setDoc(userDocRef, {
         displayName,
         email,
         createdAt,
         ...additionalInformation,
       });
     } catch (error) {
-      console.log("Failed to create user : ", error.message);
+      console.log("error creating the user", error.message);
     }
   }
 
@@ -109,10 +110,6 @@ export const createAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
 
   return await createUserWithEmailAndPassword(auth, email, password);
-
-  // await sendEmailVerification(response.user);
-  // alert("Verification Email Sent!");
-  // return response;
 };
 
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
@@ -121,7 +118,7 @@ export const signInAuthUserWithEmailAndPassword = async (email, password) => {
   return await signInWithEmailAndPassword(auth, email, password);
 };
 
-export const signOutUser = async () => signOut(auth);
+export const signOutUser = async () => await signOut(auth);
 
 export const onAuthStateChangedListener = (callback) =>
   onAuthStateChanged(auth, callback);
