@@ -18,7 +18,11 @@ export const CartDropdownContainer = styled.div`
   top: 90px;
   right: 40px;
   z-index: 5;
-  overflow-x: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  ::-webkit-scrollbar {
+    display:none;
+  }
 }
 
   ${BaseButton},
