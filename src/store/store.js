@@ -20,13 +20,14 @@ const persistConfig = {
 };
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-// const sagaMiddleware = createSagaMiddleware();
+const sagaMiddleware = createSagaMiddleware();
 
 const middleWares = [
   process.env.NODE_ENV !== "production" && logger,
-  // sagaMiddleware,
-  thunk,
+  sagaMiddleware,
+  // thunk,
 ].filter(Boolean);
+
 const composeEnhancer =
   (process.env.NODE_ENV !== "production" &&
     window &&
@@ -40,6 +41,6 @@ export const store = createStore(
   composedEnhancers
 );
 
-// sagaMiddleware.run(rootSaga);
+sagaMiddleware.run(rootSaga);
 
 export const persistor = persistStore(store);
